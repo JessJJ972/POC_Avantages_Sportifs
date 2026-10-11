@@ -1,0 +1,14 @@
+POC AVANTAGES SPORTIFS — GUIDE DE DEMARRAGE
+
+1. Extraire cette archive ZIP sur votre ordinateur.
+2. Installer Python 3.10+ si nécessaire.
+3. Ouvrir un terminal dans le dossier extrait.
+4. Lancer : python src/pipeline.py
+5. Lire les résultats dans data/output/ et ouvrir les CSV dans Power BI Desktop.
+6. Lancer les tests : python -m unittest discover -s tests -v
+7. Changer les règles : python src/pipeline.py --threshold 20 --prime-rate 0.04
+
+IMPORTANT : Les données RH fournies contiennent des informations sensibles. Ne pas publier data/input/, data/output/ ni la base SQLite sur GitHub public.
+Sans clé Google Maps, les trajets ne sont pas vérifiés et les primes ne sont pas considérées comme acquises.
+Sans webhook Slack, les messages sont préparés mais non envoyés.
+Le projet utilise SQLite pour la démonstration locale ; PostgreSQL est fourni comme schéma de migration et n'est pas connecté au pipeline.
