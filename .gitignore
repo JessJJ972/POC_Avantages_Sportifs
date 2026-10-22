@@ -8,3 +8,5 @@ data/output/
 *.db
 
 *.pbix
+
+data/
