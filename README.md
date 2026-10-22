@@ -12,7 +12,7 @@ Sport Data Solution souhaite tester deux avantages : une prime égale à **5 % d
 - Adaptateur facultatif **Google Routes API** et webhook **Slack** (activation explicite, secrets dans variables d'environnement).
 
 ## Ce qui reste à faire pour un déploiement réel
-La base utilisée par défaut est SQLite pour garantir une démonstration sans installation de serveur : **PostgreSQL n'est pas branché au pipeline**. Sans clé Google Maps, les distances domicile-bureau sont marquées **NON_VERIFIE**, et aucune prime n'est déclarée éligible sur une distance supposée. Les notifications Slack sont **simulées, non envoyées** sans activation et webhook. Les activités sont **fictives**, et non issues de Strava. Un rapport Power BI `.pbix` doit être créé dans Power BI Desktop à partir des CSV. Il faut également définir les politiques RH de confidentialité, consentement et conservation avant toute mise en production.
+La base utilisée par défaut est SQLite pour garantir une démonstration sans installation de serveur : **PostgreSQL n'est pas branché au pipeline**. Les contrôles de distance utilisent notamment IGN et OpenStreetMap. Sur 68 trajets vérifiés, 17 sont validés et 51 restent NON_VERIFIE. NON_VERIFIE signifie distance non fiabilisée, pas une preuve de fraude. Google Maps n'est pas activé dans cette démonstration. Les notifications Slack sont **simulées, non envoyées** sans activation et webhook. Les activités sont **fictives**, et non issues de Strava. Un rapport Power BI `.pbix` doit être créé dans Power BI Desktop à partir des CSV. Il faut également définir les politiques RH de confidentialité, consentement et conservation avant toute mise en production.
 
 ## Démarrage rapide
 Prérequis : Python 3.10 ou supérieur. Aucun module externe n'est nécessaire pour le mode local.
@@ -28,7 +28,7 @@ Les résultats se trouvent dans `data/output/` et la base dans `data/poc_sport.s
 ```bash
 python src/pipeline.py --prime-rate 0.04 --threshold 20
 ```
-Le pipeline recharge les activités simulées avec la même graine et **recalcule les CSV**. Il garde un historique des exécutions. Le taux de prime est appliqué uniquement aux salariés dont le trajet a été **validé via Google Maps**.
+Le pipeline recharge les activités simulées avec la même graine et **recalcule les CSV**. Il garde un historique des exécutions. Les primes sont calculées selon les règles du POC et les contrôles de distance. Les montants sont théoriques, sans versement réel.
 
 ## Intégrations optionnelles
 
@@ -56,4 +56,30 @@ Les adresses et salaires RH sont des données sensibles. Les fichiers fournis so
 - `docs/PLAN_SOUTENANCE.md` : scénario de démonstration et limites.
 
 ## Livrables attendus par le cahier des charges
-Support PDF, rapport Power BI ou équivalent, démonstration en direct et lien GitHub avec le code. **Cette archive fournit le code et des exports ; elle ne crée ni PDF, ni PBIX, ni dépôt GitHub en ligne.**
+Support PDF, rapport Power BI ou equivalent, demonstration en direct et lien GitHub avec le code. Le depot GitHub contient le code source du POC. Les livrables PDF et Power BI doivent etre prepares et verifies separement.
+
+## Résultats de la simulation du POC
+
+Les chiffres suivants proviennent d'une simulation et ne constituent pas des décisions RH réelles.
+
+| Indicateur | Résultat |
+|---|---:|
+| Salariés étudiés | 161 |
+| Activités sportives simulées | 2 777 |
+| Salariés théoriquement éligibles aux journées bien-être | 85 |
+| Journées bien-être théoriques | 425 |
+| Trajets soumis à vérification de distance | 68 |
+| Trajets validés | 17 |
+| Trajets non fiabilisés | 51 |
+| Salariés théoriquement éligibles à la prime | 17 |
+| Montant total théorique des primes | 40 990 € |
+
+### Interprétation des contrôles de distance
+
+Parmi les 68 trajets soumis à vérification, 17 sont classés `VALIDE` (25 %) et 51 `NON_VERIFIE` (75 %).
+
+Le statut `NON_VERIFIE` signifie que la distance n'a pas pu être fiabilisée. Il ne constitue pas une preuve de fraude ou de fausse déclaration.
+
+Les calculs de distance s'appuient sur des travaux utilisant les services IGN et OpenStreetMap. L'intégration Google Maps n'est pas activée dans cette démonstration.
+
+Les montants et avantages présentés sont théoriques : aucun versement de prime ni attribution réelle de journées bien-être n'est effectué par ce POC.
